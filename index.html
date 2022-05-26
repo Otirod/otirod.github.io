@@ -27,10 +27,14 @@
                 };
 
                 // Add event listener for window load, once window is loaded we can create a game instance
-                $(window).on('load', function () {
-                    // Creates an instance of the unity game
+                if (document.readyState === 'complete') {
                     loadGame();
-                });
+                } else {
+                    $(window).on('load', function () {
+                        // Creates an instance of the unity game
+                        loadGame();
+                    });
+                }
             });
 
             // Set a tournament for the game instance to play.
