@@ -53,7 +53,7 @@
                         // This fixes it by checking the request has changed the tourmament id or not and changes it back.
                         let battleText = 'https://federation.theredvillage.com/battles/';
                         let tId = arguments[0].substring(battleText.length, arguments[0].length);
-                        if (tId != tournamentId) {
+                        if (tournamentId && tournamentId > 0 && tId != tournamentId) {
                             arguments[0] = battleText += tournamentId;
                         }
                     }
