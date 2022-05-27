@@ -15,7 +15,8 @@
                 // The Unity Game will load /current/ tournament once the game is loaded.
                 // To prevent the current running tournament displaying, we need to catch when the request to current happens
                 // and afterwards send the message to load our tournament.
-                var origOpen = XMLHttpRequest.prototype.open;
+                // COMMENTED OUT - GAME UPDATED TO USE FETCH API
+                /*var origOpen = XMLHttpRequest.prototype.open;
                 XMLHttpRequest.prototype.open = function() {
                     if (arguments[1] === 'https://federation.theredvillage.com/battles/current') {
                         if (tournamentId && tournamentId > 0) {
@@ -23,10 +24,44 @@
                                 loadTournament();
                             });
                         }
-                    } 
+                    } else if (arguments[1].includes('https://federation.theredvillage.com/battles/') && arguments[1] !== 'https://federation.theredvillage.com/battles/current') {
+                        let battleText = 'https://federation.theredvillage.com/battles/';
+                        let tId = arguments[1].substring(battleText.length, arguments[1].length);
+                        console.log(tId);
+                        if (tId != tournamentId) {
+                            arguments[1] = battleText += tournamentId;
+                        }
+                    }
 
                     origOpen.apply(this, arguments);
-                };
+                };*/
+
+                // Override the FETCH API Open prototype so we can add an event listener.
+                // The Unity Game will load /current/ tournament once the game is loaded.
+                // To prevent the current running tournament displaying, we need to catch when the request to current happens
+                // and afterwards send the message to load our tournament.
+                const origFetch = window.fetch;
+                window.fetch = function() {
+                    if (arguments[0] === 'https://federation.theredvillage.com/battles/current') {
+                        if (tournamentId && tournamentId > 0) {
+                            this.addEventListener('load', function() {
+                                loadTournament();
+                            });
+                        }
+                    } else if (arguments[0].includes('https://federation.theredvillage.com/battles/') && arguments[0] !== 'https://federation.theredvillage.com/battles/current') {
+                        // Currently broken, odd number tournaments get changed to even numbers in game logic.
+                        // This fixes it by checking the request has changed the tourmament id or not and changes it back.
+                        let battleText = 'https://federation.theredvillage.com/battles/';
+                        let tId = arguments[0].substring(battleText.length, arguments[0].length);
+                        if (tId != tournamentId) {
+                            arguments[0] = battleText += tournamentId;
+                        }
+                    }
+
+                    // Get the parameter in arguments
+                    // Intercept the parameter here 
+                    return origFetch.apply(this, arguments)
+                }
 
                 // Add event listener for window load, once window is loaded we can create a game instance
                 if (document.readyState === 'complete') {
