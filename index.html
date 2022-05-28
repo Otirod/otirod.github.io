@@ -228,7 +228,7 @@
                 } else {
                     let tableBody = $('<tbody></tbody>');
                     for (let i = 0; i < currentTournaments.items.length; i++) {
-                        tableBody.append(`<tr><td>${currentTournaments.items[i].name}</td><td>${CONSTANTS.tournament.event_type[currentTournaments.items[i].class]}</td><td>${currentTournaments.items[i].fee}</td><td><button onclick="loadTournament(${currentTournaments.items[i].id})">Watch</td></tr>`);
+                        tableBody.append(`<tr><td>${currentTournaments.items[i].name}</td><td>${CONSTANTS.tournament.event_type[currentTournaments.items[i].class]}</td><td>${currentTournaments.items[i].fee}</td><td><button class="blood-button" onclick="loadTournament(${currentTournaments.items[i].id})">Watch</td></tr>`);
                     }
                     tableContainer.append(tableBody);
                 }
